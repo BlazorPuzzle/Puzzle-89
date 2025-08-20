@@ -1,8 +1,4 @@
-﻿
-
-
-
-@page "/"
+﻿@page "/"
 @rendermode InteractiveServer
 @inject ILogger<Home> Logger
 
@@ -10,7 +6,17 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Blazor Puzzle #89</h1>
+
+<p>This is a .NET 9 Blazor Web App with Global Server Interactivity.</p>
+
+<p>We have an input box bound to a search string. 
+	On every keystroke it filters a list by the search term, 
+	which can be very chatty, especially after the first character 
+	which may return hundreds or even thousands of records.</p>
+
+<p>How can we make this mechanism more efficient to lighten the load on the back end?</p>
+<br/>
 
 <div>
 	<label for="episodeSearch">Search Episodes:</label>
@@ -35,9 +41,6 @@
 	   private KeyValuePair<int, string>? selectedEpisode = null;
 
 	   private List<KeyValuePair<int, string>> filteredEpisodes = new();
-	   private System.Threading.Timer? debounceTimer;
-	   private readonly int debounceDelayMs = 300;
-	   private readonly int minLength = 2;
 
 	   private void OnInputChanged(ChangeEventArgs e)
 	   {
