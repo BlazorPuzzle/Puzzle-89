@@ -1,0 +1,66 @@
+﻿
+
+
+
+@page "/"
+@rendermode InteractiveServer
+@inject ILogger<Home> Logger
+
+@using Puzzle89
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<div>
+	<label for="episodeSearch">Search Episodes:</label>
+		<input id="episodeSearch" value="@searchText" @oninput="OnInputChanged" autocomplete="off" />
+	<ul style="list-style:none; padding-left:0; max-height:200px; overflow-y:auto; background:#fff; border:1px solid #ccc; position:absolute; z-index:10; width:300px;" hidden="@(filteredEpisodes.Count == 0 || selectedEpisode != null)">
+		@foreach (var ep in filteredEpisodes)
+		{
+			<li style="padding:2px 8px; cursor:pointer;" @onclick="() => SelectEpisode(ep.Key)">@ep.Key - @ep.Value</li>
+		}
+	</ul>
+</div>
+
+@if (selectedEpisode != null)
+{
+	<div style="margin-top:1em;">
+		<strong>Selected Episode:</strong> @selectedEpisode.Value.Key - @selectedEpisode.Value.Value
+	</div>
+}
+
+@code {
+	   private string searchText = string.Empty;
+	   private KeyValuePair<int, string>? selectedEpisode = null;
+
+	   private List<KeyValuePair<int, string>> filteredEpisodes = new();
+	   private System.Threading.Timer? debounceTimer;
+	   private readonly int debounceDelayMs = 300;
+	   private readonly int minLength = 2;
+
+	   private void OnInputChanged(ChangeEventArgs e)
+	   {
+		   searchText = e.Value?.ToString() ?? string.Empty;
+		   ApplyFilter();
+	   }
+
+	   private void ApplyFilter()
+	   {
+		   filteredEpisodes = Data.EpisodeTitles
+			   .Where(ep => ep.Key.ToString().Contains(searchText, StringComparison.OrdinalIgnoreCase)
+						 || ep.Value.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+			   .OrderByDescending(ep => ep.Key)
+			   .Take(10)
+			   .ToList();
+		   selectedEpisode = null;
+		   InvokeAsync(StateHasChanged);
+	   }
+
+	   private void SelectEpisode(int key)
+	   {
+		   selectedEpisode = new KeyValuePair<int, string>(key, Data.EpisodeTitles[key]);
+		   searchText = Data.EpisodeTitles[key];
+		   filteredEpisodes = new();
+	   }
+}
