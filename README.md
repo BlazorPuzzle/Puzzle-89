@@ -2,7 +2,7 @@
 
 Carl and Jeff want to know how to make a type-ahead search mechanism more efficient.
 
-YouTube Video: https://youtu.be/
+YouTube Video: https://youtu.be/w7gxuv2PywA
 
 Blazor Puzzle Home Page: https://blazorpuzzle.com
 
